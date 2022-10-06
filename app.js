@@ -7,7 +7,7 @@ const oscillators = {};
 
 startButton.addEventListener("click", () => {
   ctx = new AudioContext();
-  console.log(ctx);
+  console.log("CTX:",ctx);
 });
 
 
@@ -60,7 +60,7 @@ function handleInput(input) {
 function noteOn(note, velocity) {
   const oscillator = ctx.createOscillator();
   const oscDelay = ctx.createDelay()
-  oscDelay.delayTime.value = 0.5;
+  oscDelay.delayTime.value = 0.09;
   console.log(oscDelay);
 
 
@@ -76,7 +76,7 @@ function noteOn(note, velocity) {
   const velocityGain = ctx.createGain();
   velocityGain.gain.value = velocityGainAmount;
 
-  oscillator.type = "triangle";
+  oscillator.type = "square";
   oscillator.frequency.value = midiToFreq(note);
   
   oscillator.connect(oscGain); 
@@ -84,8 +84,8 @@ function noteOn(note, velocity) {
   oscGain.connect(velocityGain);
   oscGain.connect(oscDelay);
   oscDelay.connect(velocityGain);
-  // oscDelay.connect(feedback);
-  // feedback.connect(oscDelay);
+  oscDelay.connect(feedback);
+  feedback.connect(oscDelay);
   velocityGain.connect(ctx.destination);
 
   // setting up to fade note on release
@@ -121,3 +121,4 @@ function updateDevices(event) {
 function failure() {
   console.log(`Could not connect MIDI`);
 }
+
